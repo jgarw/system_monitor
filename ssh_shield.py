@@ -4,14 +4,27 @@
 import datetime
 import re
 
+# This function will extract the timestamp from the current line in a file
 def extract_timestamp(line):
-    # extract the datetime from the file line
+
+    # define regex pattern for datetime
     datetime_pattern = r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}[-+]\d{2}:\d{2}"
     match = re.search(datetime_pattern, line);
     datetime_str = match.group();
 
-    dt_obj = datetime.datetime.fromisoformat(datetime_str);
-    print("Extracted Datetime Object:", dt_obj);
+    dt = datetime.datetime.fromisoformat(datetime_str);
+    
+    return dt;
+
+# this function will search for an IP address in the current line of a file
+def extract_ip(line):
+
+    # define regex pattern for ip
+    ip_pattern = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
+    match = re.search(ip_pattern, line);
+    ip = match.group();
+    
+    return ip;
 
 # open ssh log file and begin reading through it
 def parse_log():
@@ -27,6 +40,7 @@ def parse_log():
                 
                 # extract the timestamp from the log line
                 extract_timestamp(line);
+                extract_ip(line);
                 
                 # print(line);
         print(line);
