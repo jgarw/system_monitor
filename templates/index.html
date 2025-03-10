@@ -50,6 +50,9 @@
                 {% else %}
                     <div id="no-alerts">No alerts</div>
                 {% endif %}
+                <form method="POST" action="/clear_alerts">
+                    <button type="submit" id="clear-alerts">Clear Alerts</button>
+                </form>
             </div>
         </div>
     </body>

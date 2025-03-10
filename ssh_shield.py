@@ -8,7 +8,7 @@ import threading
 # from prettytable import PrettyTable
 import time
 import re
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, redirect, url_for
 
 app = Flask("__name__")
 
@@ -134,7 +134,19 @@ def get_network_connections():
         
         
         return connections
+    
+# create a function for clearing alerts and warnings in front end
+@app.route("/clear_alerts", methods=["POST"])
+def clear_alerts():
+    global alert_messages, warning_messages
+    
+    alert_messages = {}
+    warning_messages = {}
 
+    return redirect(url_for("index"))
+
+
+# create flask route for index page
 @app.route("/")
 def index():
 

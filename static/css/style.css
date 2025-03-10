@@ -29,6 +29,7 @@ h2{
 .container{
     display: flex;
     justify-content: space-evenly;
+    flex-direction: row;
     flex-wrap: wrap;
     width: 100%
 }
@@ -40,11 +41,15 @@ h2{
 }
 
 #alerts {
+    display: flex;
+    flex-direction: column;
     background-color: #404040;
     min-width: 40%;
     padding: 10px;
     border-radius: 10px;
+    position: relative;
 }
+
 .alert {
     width: 100%;
     text-align: center;
@@ -74,28 +79,53 @@ h2{
     border-radius: 10px;
     margin: 5px 0;
 }
+#clear-alerts {
+    background-color: #007fe7; 
+    color: white; 
+    border: none;
+    padding: 10px; 
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+    width: 100%; 
+    margin-bottom: 15px; 
+}
 
-/* Responsive Design */
+#clear-alerts:hover {
+    background-color: #003bd1; 
+    transform: scale(1.05); 
+}
+
 @media (max-width: 768px) {
-    .container {
+    .container{
+        display:flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
-        justify-content: space-evenly;
+        width:100%;
     }
 
-    .connections {
-        width: 90%;
+    .connections{
+        min-width: 80%;
     }
 
     table {
         font-size: 14px;
         overflow-x: auto;
-        display: block; 
+        display: block;
     }
 
-    .alert {
-        font-size: 14px;
-        padding: 8px 0;
+    #alerts{
+        min-width: 80%;
         margin: 10px 0;
+        min-height: 200px;
+        bottom: auto;
+    }
+
+    #clear-alerts{
+        width: 100%;
     }
 }
+
