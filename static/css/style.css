@@ -91,6 +91,7 @@ h2{
     transition: background-color 0.3s ease, transform 0.3s ease; 
     width: 100%; 
     margin-bottom: 15px; 
+    margin: 5px 0;
 }
 
 #clear-alerts:hover {
