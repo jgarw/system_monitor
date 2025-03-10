@@ -15,6 +15,7 @@ app = Flask("__name__")
 # define dictionary for failed attempts
 failed_attempts = {}
 alert_messages = {}
+warning_messages = {}
 
 # this function will get the current datetime in iso format
 def get_current_datetime():
@@ -80,13 +81,26 @@ def parse_log():
 
                         # if there are 3 or more failed attempts for this ip, trigger alert
                         if len(failed_attempts[ip]) >= 3:
-                            print(f"🚨 BRUTE FORCE ATTACK DETECTED FROM: {ip} 🚨");
                             alert = f"🚨 BRUTE FORCE ATTACK DETECTED FROM: {ip} 🚨";
                             alert_messages[ip].append(alert);
+                
+                # look for successful SSH in logs
+                if "Accepted password for" in line:
+                    ip = extract_ip(line);
+
+                    if ip not in warning_messages:
+                        warning_messages[ip] = [];
+                    
+                    # log successful SSH attempts as warnings
+                    warning = f"Successful SSH Login from: {ip}";
+                    warning_messages[ip].append(warning);
+    
+                    print(f"DEBUG: Warnings for {ip}: {warning_messages[ip]}")
+    
 
     # catch file not found exception
     except FileNotFoundError:
-        print("Unable to open /var/log/auth.logs.");
+        print("Unable to open /var/log/auth.log");
 
 # function to monitor network connections in a table
 def get_network_connections():
@@ -96,7 +110,7 @@ def get_network_connections():
 
     while True: 
         # run 'ss -tun' as a subprocess
-        result = subprocess.run(["ss", "-tun"],stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(["ss", "-tun4"],stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         # verify command ran 
         if result.returncode != 0:
@@ -131,8 +145,14 @@ def index():
     #  iterate through the attempts associated with each IP
     for alert_list in alert_messages.values():
         alerts.extend(alert_list)
+
+    warnings = []
+    
+    # iterate through warning messages
+    for warning_list in warning_messages.values():
+        warnings.extend(warning_list);
             
-    return render_template('index.html', connections=connections, alerts=alerts)
+    return render_template('index.html', connections=connections, alerts=alerts, warnings=warnings)
 
 def main():
     print("Welcome to System Monitor")

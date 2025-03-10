@@ -40,12 +40,15 @@
             </div>
             <div id="alerts">
                 <h2>Alerts</h2>
-                {% if alerts %}
+                {% if alerts or warnings %}
                     {% for alert in alerts %}
                         <div class="alert">{{ alert }}</div>
                     {% endfor %}
+                    {% for warning in warnings %}
+                        <div class="warning">{{ warning }}</div>
+                    {% endfor %}
                 {% else %}
-                    <div>No alerts</div>
+                    <div id="no-alerts">No alerts</div>
                 {% endif %}
             </div>
         </div>
