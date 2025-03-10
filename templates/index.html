@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="refresh" content="10">
+        <title>System Monitor</title>
+    </head>
+    <body>
+
+        <h1>System Monitor</h1>
+        
+        <h2>Brute Force Alerts</h2>
+        <div id="alerts">
+            {% if alerts %}
+                {% for alert in alerts %}
+                    <div class="alert">{{ alert }}</div>
+                {% endfor %}
+            {% else %}
+                <div>No alerts</div>
+            {% endif %}
+        </div>
+        
+        <h2>Current Network Connections</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>NetID</th>
+                    <th>Local Address</th>
+                    <th>Peer Address</th>
+                    <th>State</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if connections %}
+                    {% for conn in connections %}
+                        <tr>
+                            <td>{{ conn[0] }}</td>
+                            <td>{{ conn[1] }}</td>
+                            <td>{{ conn[2] }}</td>
+                            <td>{{ conn[3] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="4">No connections found</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+        
+        </body>
+</html>
