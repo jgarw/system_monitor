@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="refresh" content="10">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}">
+        <title>System Monitor</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>System Monitor</h1>
+            
+            <div class="connections">
+                <h2>Current Network Connections</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NetID</th>
+                            <th>Local Address</th>
+                            <th>Peer Address</th>
+                            <th>State</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if connections %}
+                            {% for conn in connections %}
+                                <tr>
+                                    <td>{{ conn[0] }}</td>
+                                    <td>{{ conn[1] }}</td>
+                                    <td>{{ conn[2] }}</td>
+                                    <td>{{ conn[3] }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="4">No connections found</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div id="alerts">
+                <h2>Alerts</h2>
+                {% if alerts or warnings %}
+                    {% for alert in alerts %}
+                        <div class="alert">{{ alert }}</div>
+                    {% endfor %}
+                    {% for warning in warnings %}
+                        <div class="warning">{{ warning }}</div>
+                    {% endfor %}
+                    <form method="POST" action="/clear_alerts">
+                        <button type="submit" id="clear-alerts">Clear Alerts</button>
+                    </form>
+                {% else %}
+                    <div id="no-alerts">No alerts</div>
+                {% endif %}
+                
+            </div>
+        </div>
+    </body>
+</html>

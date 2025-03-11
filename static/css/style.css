@@ -1,0 +1,132 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+th{
+    background-color: #4e4e4e;
+    text-align: center;
+}
+h1 {
+    width: 100%;
+    text-align: center;
+}
+h2{
+    text-align: center;
+}
+.container{
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%
+}
+.connections{
+    background-color: #404040;
+    padding: 20px;
+    max-width: 50%;
+    border-radius: 10px;
+}
+
+#alerts {
+    display: flex;
+    flex-direction: column;
+    background-color: #404040;
+    min-width: 40%;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.alert {
+    width: 100%;
+    text-align: center;
+    background-color: rgb(233, 0, 0);
+    padding: 10px 0;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+.warning {
+    width: 100%;
+    text-align: center;
+    background-color: rgb(231, 200, 1);
+    padding: 10px 0;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+#no-alerts{
+    background-color: rgb(1, 184, 1);
+    text-align: center;
+    padding: 10px 0;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    margin: 5px 0;
+}
+#clear-alerts {
+    background-color: #007fe7; 
+    color: white; 
+    border: none;
+    padding: 10px; 
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+    width: 100%; 
+    margin-bottom: 15px; 
+    margin: 5px 0;
+}
+
+#clear-alerts:hover {
+    background-color: #003bd1; 
+    transform: scale(1.05); 
+}
+
+@media (max-width: 768px) {
+    .container{
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width:100%;
+    }
+
+    .connections{
+        min-width: 80%;
+    }
+
+    table {
+        font-size: 14px;
+        overflow-x: auto;
+        display: block;
+    }
+
+    #alerts{
+        min-width: 80%;
+        margin: 10px 0;
+        min-height: 200px;
+        bottom: auto;
+    }
+
+    #clear-alerts{
+        width: 100%;
+    }
+}
+

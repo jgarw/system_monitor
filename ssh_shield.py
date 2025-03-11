@@ -2,11 +2,20 @@
 # brute force attacks from the same IP within a short time period
 
 from datetime import datetime, timedelta, timezone
+import os
+import subprocess
+import threading
+# from prettytable import PrettyTable
 import time
 import re
+from flask import Flask, render_template, jsonify, redirect, url_for
+
+app = Flask("__name__")
 
 # define dictionary for failed attempts
 failed_attempts = {}
+alert_messages = {}
+warning_messages = {}
 
 # this function will get the current datetime in iso format
 def get_current_datetime():
@@ -63,6 +72,7 @@ def parse_log():
                     # if there is not already a key entry for this ip, initialize one
                     if ip not in failed_attempts:
                         failed_attempts[ip] = [];
+                        alert_messages[ip] = [];
                         print(f"SSH attempt from new IP: {ip}")
                     
                     # check if the difference between timestamp and current time is < 60 seconds
@@ -71,20 +81,101 @@ def parse_log():
 
                         # if there are 3 or more failed attempts for this ip, trigger alert
                         if len(failed_attempts[ip]) >= 3:
-                            print(f"🚨 BRUTE FORCE ATTACK DETECTED FROM: {ip} 🚨");
+                            alert = f"🚨 BRUTE FORCE ATTACK DETECTED FROM: {ip} 🚨";
+                            alert_messages[ip].append(alert);
+                
+                # look for successful SSH in logs
+                if "Accepted password for" in line:
+                    ip = extract_ip(line);
+
+                    if ip not in warning_messages:
+                        warning_messages[ip] = [];
+                    
+                    # log successful SSH attempts as warnings
+                    warning = f"Successful SSH Login from: {ip}";
+                    warning_messages[ip].append(warning);
+    
+                    print(f"DEBUG: Warnings for {ip}: {warning_messages[ip]}")
+    
 
     # catch file not found exception
     except FileNotFoundError:
-        print("Unable to open /var/log/auth.logs.");
+        print("Unable to open /var/log/auth.log");
 
+# function to monitor network connections in a table
+def get_network_connections():
+
+    # table = PrettyTable()
+    # table.field_names = ["NetID", "Local Address", "Peer Address", "State"]
+
+    while True: 
+        # run 'ss -tun' as a subprocess
+        result = subprocess.run(["ss", "-tun4"],stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # verify command ran 
+        if result.returncode != 0:
+            print("Error running ss command!")
+            return
+        
+        output = result.stdout;
+        lines = output.splitlines()
+
+        connections = [];
+
+        # iterate through lines starting after 1 (headers)
+        for line in lines[1:]:
+            parts = line.split();
+            net_id = parts[0];
+            state = parts[1];
+            local_address = parts[4];
+            peer_address = parts[5];
+            # table.add_row([net_id, local_address, peer_address, state])
+            connections.append([net_id, local_address, peer_address, state]);
+        
+        
+        return connections
+    
+# create a function for clearing alerts and warnings in front end
+@app.route("/clear_alerts", methods=["POST"])
+def clear_alerts():
+    global alert_messages, warning_messages
+    
+    alert_messages = {}
+    warning_messages = {}
+
+    return redirect(url_for("index"))
+
+
+# create flask route for index page
+@app.route("/")
+def index():
+
+    connections = get_network_connections();
+
+    alerts = [];
+
+    #  iterate through the attempts associated with each IP
+    for alert_list in alert_messages.values():
+        alerts.extend(alert_list)
+
+    warnings = []
+    
+    # iterate through warning messages
+    for warning_list in warning_messages.values():
+        warnings.extend(warning_list);
+            
+    return render_template('index.html', connections=connections, alerts=alerts, warnings=warnings)
 
 def main():
+    print("Welcome to System Monitor")
 
-    print("Welcome to System Monitor");
+    # Create threads for log parsing and network monitoring
+    log_thread = threading.Thread(target=parse_log, daemon=True)
 
-    # loop program indefinitely
-    while True:
-        parse_log();
+    # Start the threads
+    log_thread.start()
+
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
 if __name__ == '__main__':
     main();
