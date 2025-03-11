@@ -15,8 +15,3 @@ System Monitor is a Python-based security tool designed to help detect potential
 
 ## License
 This project is open-source and available under the MIT License.
-
----
-
-This project showcases my ability to learn new languages and concepts independently. I'm always looking for ways to expand my knowledge and apply it to real-world security challenges!
-
